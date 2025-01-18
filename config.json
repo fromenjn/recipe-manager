@@ -1,4 +1,4 @@
 {
     "server_port": ":9090",
-    "recipes_path": "data/recipes"
+    "recipes_path": "./data/recipes"
 }

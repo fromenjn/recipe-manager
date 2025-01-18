@@ -1,0 +1,109 @@
+{
+    "id": "2",
+    "name": "Chocolate Cake",
+    "ingredients": [
+      {
+        "name": "All-purpose flour",
+        "quantity": 200,
+        "unit": "g"
+      },
+      {
+        "name": "Unsweetened cocoa powder",
+        "quantity": 50,
+        "unit": "g"
+      },
+      {
+        "name": "Sugar",
+        "quantity": 150,
+        "unit": "g"
+      },
+      {
+        "name": "Baking powder",
+        "quantity": 1,
+        "unit": "tsp"
+      },
+      {
+        "name": "Salt",
+        "quantity": 0.5,
+        "unit": "tsp"
+      },
+      {
+        "name": "Eggs",
+        "quantity": 2,
+        "unit": "pc"
+      },
+      {
+        "name": "Milk",
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "name": "Vegetable oil",
+        "quantity": 50,
+        "unit": "ml"
+      }
+    ],
+    "steps": [
+      {
+        "id": "step1",
+        "name": "Preheat and Prep",
+        "instructions": "Preheat your oven to 180°C (350°F). Grease or line a cake pan with parchment paper.",
+        "illustration": [
+          {
+            "id": "illustration1",
+            "description": "Greased cake pan",
+            "filepath": "/images/chocolate_cake/step1.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step2",
+        "name": "Mix Dry Ingredients",
+        "instructions": "In a large bowl, whisk together flour, cocoa powder, sugar, baking powder, and salt until well combined.",
+        "illustration": [
+          {
+            "id": "illustration2",
+            "description": "Dry ingredients in a mixing bowl",
+            "filepath": "/images/chocolate_cake/step2.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step3",
+        "name": "Combine Wet Ingredients",
+        "instructions": "In a separate bowl, whisk together the eggs, milk, and oil. Slowly pour the wet mixture into the dry mixture, stirring until just combined.",
+        "illustration": [
+          {
+            "id": "illustration3",
+            "description": "Combining wet and dry ingredients",
+            "filepath": "/images/chocolate_cake/step3.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step4",
+        "name": "Bake",
+        "instructions": "Pour the batter into the prepared pan and bake for 25–30 minutes, or until a toothpick inserted into the center comes out clean.",
+        "illustration": [
+          {
+            "id": "illustration4",
+            "description": "Cake batter in pan, ready to bake",
+            "filepath": "/images/chocolate_cake/step4.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step5",
+        "name": "Cool and Serve",
+        "instructions": "Allow the cake to cool for 10 minutes in the pan before removing. Cool completely on a wire rack, then slice and serve. Frost if desired.",
+        "illustration": [
+          {
+            "id": "illustration5",
+            "description": "Fully baked chocolate cake cooling on a rack",
+            "filepath": "/images/chocolate_cake/step5.jpg"
+          }
+        ]
+      }
+    ]
+  }
+  

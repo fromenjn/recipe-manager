@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -58,6 +59,8 @@ func (r *jsonRepository) loadRecipes() error {
 			if loadErr := r.parseFile(path); loadErr != nil {
 				// Return an error so we fail fast on a broken file
 				return loadErr
+			} else {
+				slog.Debug(fmt.Sprintf("Loaded recipe from file %s", path))
 			}
 		}
 		return nil
@@ -83,20 +86,11 @@ func (r *jsonRepository) parseFile(path string) error {
 		return fmt.Errorf("failed to read file %s: %w", path, err)
 	}
 
-	var fileRecipes []domain.Recipe
-	if err := json.Unmarshal(data, &fileRecipes); err != nil {
+	var fileRecipe domain.Recipe
+	if err := json.Unmarshal(data, &fileRecipe); err != nil {
 		return fmt.Errorf("failed to unmarshal JSON in file %s: %w", path, err)
 	}
-
-	for _, rcp := range fileRecipes {
-		if _, exists := r.recipes[rcp.ID]; exists {
-			// Warn or handle duplicates as you see fit
-			// For example, you could override the existing recipe, or skip
-			return fmt.Errorf("duplicate recipe ID '%s' found in file %s", rcp.ID, path)
-		}
-		r.recipes[rcp.ID] = rcp
-	}
-
+	r.recipes[fileRecipe.ID] = fileRecipe
 	return nil
 }
 

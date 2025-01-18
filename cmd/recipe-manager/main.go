@@ -2,8 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/fromenjn/recipe-manager/internal/config"
 	"github.com/fromenjn/recipe-manager/internal/domain"
@@ -13,6 +16,10 @@ import (
 )
 
 func main() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
 	configPath := flag.String("config", "config.json", "Path to configuration JSON file")
 	flag.Parse()
 	// Load config
@@ -40,8 +47,8 @@ func main() {
 	router := handlers.NewRouter(recipeHandler)
 
 	// Start server on the configured port
-	log.Printf("Starting server on %s", cfg.ServerPort)
+	slog.Info(fmt.Sprintf("Starting server on %s", cfg.ServerPort))
 	if err := http.ListenAndServe(cfg.ServerPort, router); err != nil {
-		log.Fatalf("server error: %v", err)
+		slog.Error(fmt.Sprintf("server error: %v", err))
 	}
 }

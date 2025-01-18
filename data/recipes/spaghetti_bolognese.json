@@ -1,0 +1,82 @@
+{
+    "id": "1",
+    "name": "Spaghetti Bolognese",
+    "ingredients": [
+      {
+        "name": "Spaghetti",
+        "quantity": 400,
+        "unit": "g"
+      },
+      {
+        "name": "Ground beef",
+        "quantity": 300,
+        "unit": "g"
+      },
+      {
+        "name": "Onion",
+        "quantity": 1,
+        "unit": "pc"
+      },
+      {
+        "name": "Garlic",
+        "quantity": 2,
+        "unit": "clove"
+      },
+      {
+        "name": "Tomato sauce",
+        "quantity": 400,
+        "unit": "ml"
+      }
+    ],
+    "steps": [
+      {
+        "id": "step1",
+        "name": "Prepare Ingredients",
+        "instructions": "Finely chop the onion and garlic. Gather all ingredients for quick access.",
+        "illustration": [
+          {
+            "id": "illustration1",
+            "description": "Chopped onions and garlic on a cutting board",
+            "filepath": "/images/spaghetti/step1.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step2",
+        "name": "Cook Sauce",
+        "instructions": "In a saucepan, sauté the onions and garlic in olive oil until translucent. Add the ground beef and cook until browned. Stir in tomato sauce and simmer for 15 minutes.",
+        "illustration": [
+          {
+            "id": "illustration2",
+            "description": "Simmering ground beef in tomato sauce",
+            "filepath": "/images/spaghetti/step2.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step3",
+        "name": "Boil Spaghetti",
+        "instructions": "Boil spaghetti in salted water according to package instructions (usually around 8–10 minutes). Drain and set aside.",
+        "illustration": [
+          {
+            "id": "illustration3",
+            "description": "Boiling spaghetti in a pot of water",
+            "filepath": "/images/spaghetti/step3.jpg"
+          }
+        ]
+      },
+      {
+        "id": "step4",
+        "name": "Combine and Serve",
+        "instructions": "Place the spaghetti on a plate and top with the sauce. Garnish with grated cheese or fresh basil if desired.",
+        "illustration": [
+          {
+            "id": "illustration4",
+            "description": "Finished spaghetti bolognese, ready to serve",
+            "filepath": "/images/spaghetti/step4.jpg"
+          }
+        ]
+      }
+    ]
+  }
+  

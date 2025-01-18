@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -73,9 +74,10 @@ func (rh *RecipeHandler) GetRecipe(w http.ResponseWriter, r *http.Request) {
 // @Tags         recipes
 // @Produce      json
 // @Success      200  {array}  domain.Recipe
-// @Failure      500  {object}  Error
+// @Failure      500  {string}  string "failed to write response"
 // @Router       /recipes [get]
 func (rh *RecipeHandler) ListRecipes(w http.ResponseWriter, r *http.Request) {
+	slog.Debug("Listing all recipes")
 	recipes, err := rh.getAllRecipesUC.Execute()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
