@@ -107,7 +107,7 @@ func (rh *RecipeHandler) ListRecipes(w http.ResponseWriter, r *http.Request) {
 // @Description  Returns all ingredients from all the recipes
 // @Tags         recipes
 // @Produce      json
-// @Success      200  {array}  domain.Recipe
+// @Success      200  {array}  string
 // @Failure      500  {string}  string "failed to write response"
 // @Router       /ingredients [get]
 func (rh *RecipeHandler) ListIngredients(w http.ResponseWriter, r *http.Request) {

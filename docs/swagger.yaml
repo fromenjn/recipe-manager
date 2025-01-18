@@ -58,7 +58,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/domain.Recipe'
+              type: string
             type: array
         "500":
           description: failed to write response

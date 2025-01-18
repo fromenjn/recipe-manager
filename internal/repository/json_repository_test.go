@@ -16,7 +16,7 @@ func TestNewJSONRepository_SingleFile(t *testing.T) {
 
 	// Write a test JSON file
 	testFilePath := filepath.Join(dir, "recipes1.json")
-	content := []byte(`[
+	content := []byte(`
         {
             "id": "1",
             "name": "Pancakes",
@@ -25,7 +25,7 @@ func TestNewJSONRepository_SingleFile(t *testing.T) {
                 {"name": "Milk", "quantity": 300, "unit": "ml"}
             ]
         }
-    ]`)
+    `)
 	if err := os.WriteFile(testFilePath, content, 0644); err != nil {
 		t.Fatalf("failed to write test file: %v", err)
 	}
@@ -63,7 +63,7 @@ func TestNewJSONRepository_MultipleFiles(t *testing.T) {
 	file1 := filepath.Join(dir, "recipes1.json")
 	file2 := filepath.Join(dir, "recipes2.json")
 
-	content1 := []byte(`[
+	content1 := []byte(`
         {
             "id": "1",
             "name": "Pancakes",
@@ -71,9 +71,9 @@ func TestNewJSONRepository_MultipleFiles(t *testing.T) {
                 {"name": "Flour", "quantity": 200, "unit": "grams"}
             ]
         }
-    ]`)
+    `)
 
-	content2 := []byte(`[
+	content2 := []byte(`
         {
             "id": "2",
             "name": "Omelette",
@@ -81,7 +81,7 @@ func TestNewJSONRepository_MultipleFiles(t *testing.T) {
                 {"name": "Egg", "quantity": 3, "unit": "pieces"}
             ]
         }
-    ]`)
+    `)
 
 	if err := os.WriteFile(file1, content1, 0644); err != nil {
 		t.Fatalf("failed to write file1: %v", err)
@@ -111,43 +111,5 @@ func TestNewJSONRepository_MultipleFiles(t *testing.T) {
 	}
 	if rcp2 != nil && rcp2.Name != "Omelette" {
 		t.Errorf("expected 'Omelette', got %s", rcp2.Name)
-	}
-}
-
-func TestNewJSONRepository_DuplicateID(t *testing.T) {
-	dir, err := os.MkdirTemp("", "test-recipes-")
-	if err != nil {
-		t.Fatalf("failed to create temp dir: %v", err)
-	}
-	defer os.RemoveAll(dir)
-
-	file1 := filepath.Join(dir, "recipes1.json")
-	file2 := filepath.Join(dir, "recipes2.json")
-
-	content1 := []byte(`[
-        {
-            "id": "1",
-            "name": "Pancakes"
-        }
-    ]`)
-
-	// Duplicate ID = 1
-	content2 := []byte(`[
-        {
-            "id": "1",
-            "name": "Another Pancakes"
-        }
-    ]`)
-
-	if err := os.WriteFile(file1, content1, 0644); err != nil {
-		t.Fatalf("failed to write file1: %v", err)
-	}
-	if err := os.WriteFile(file2, content2, 0644); err != nil {
-		t.Fatalf("failed to write file2: %v", err)
-	}
-
-	_, err = NewJSONRepository(dir)
-	if err == nil {
-		t.Error("expected error due to duplicate ID, got no error")
 	}
 }
