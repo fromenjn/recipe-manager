@@ -3,5 +3,204 @@
     "info": {
         "contact": {}
     },
-    "paths": {}
+    "paths": {
+        "/ingredients": {
+            "get": {
+                "description": "Returns all ingredients from all the recipes",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "List all ingredients",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Recipe"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed to write response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipe/{recipeID}": {
+            "get": {
+                "description": "Get a recipe by its ID. Optionally, scale ingredient quantities by specifying `ingredient` and `quantity`.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "Retrieve a single recipe",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Recipe ID (e.g. '123')",
+                        "name": "recipeID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Ingredient to scale (e.g. 'Flour')",
+                        "name": "ingredient",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "Quantity to scale the ingredient to (e.g. '300')",
+                        "name": "quantity",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Recipe"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid 'quantity' query parameter",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "recipe not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/recipes": {
+            "get": {
+                "description": "Returns all recipes in the system",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "recipes"
+                ],
+                "summary": "List all recipes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Ingredient to scale (e.g. 'Flour')",
+                        "name": "ingredient",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Recipe"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "failed to write response",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Ingredient": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "number"
+                },
+                "unit": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Recipe": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.Ingredient"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "steps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RecipeStep"
+                    }
+                }
+            }
+        },
+        "domain.RecipeIllustration": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "filepath": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RecipeStep": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "illustration": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.RecipeIllustration"
+                    }
+                },
+                "instructions": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

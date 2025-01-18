@@ -1,6 +1,6 @@
 module github.com/fromenjn/recipe-manager
 
-go 1.20
+go 1.23
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

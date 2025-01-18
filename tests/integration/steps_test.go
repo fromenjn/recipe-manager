@@ -26,7 +26,7 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 		port = 9090
 		cmd = exec.Command("./run_server.sh")
 		if err := cmd.Start(); err != nil {
-			panic(fmt.Sprintf("failed to start recipe-manager binary: %v", err))
+			panic(fmt.Sprintf("failed to start recipe-manager: %v", err))
 		}
 
 		// 4. Wait for the server to become ready (simple approach: retry a few times)

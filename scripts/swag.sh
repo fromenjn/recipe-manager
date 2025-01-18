@@ -1,1 +1,0 @@
-swag init -d cmd/recipe-manager  -o docs

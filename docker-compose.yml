@@ -1,0 +1,9 @@
+services:
+  recipe-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: recipe-manager:latest
+    container_name: recipe-manager
+    ports:
+      - "8080:80"

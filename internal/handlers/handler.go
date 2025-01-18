@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -11,14 +12,16 @@ import (
 )
 
 type RecipeHandler struct {
-	getRecipeUC     usecase.GetRecipeUseCase
-	getAllRecipesUC usecase.GetAllRecipesUseCase
+	getRecipeUC         usecase.GetRecipeUseCase
+	getAllRecipesUC     usecase.GetAllRecipesUseCase
+	getAllIngredientsUC usecase.GetAllIngredientsUseCase
 }
 
-func NewRecipeHandler(getRecipeUC usecase.GetRecipeUseCase, getAllRecipesUC usecase.GetAllRecipesUseCase) *RecipeHandler {
+func NewRecipeHandler(getRecipeUC usecase.GetRecipeUseCase, getAllRecipesUC usecase.GetAllRecipesUseCase, getAllIngredientsUC usecase.GetAllIngredientsUseCase) *RecipeHandler {
 	return &RecipeHandler{
-		getRecipeUC:     getRecipeUC,
-		getAllRecipesUC: getAllRecipesUC,
+		getRecipeUC:         getRecipeUC,
+		getAllRecipesUC:     getAllRecipesUC,
+		getAllIngredientsUC: getAllIngredientsUC,
 	}
 }
 
@@ -34,12 +37,12 @@ func NewRecipeHandler(getRecipeUC usecase.GetRecipeUseCase, getAllRecipesUC usec
 // @Failure      400  {string}  string "invalid 'quantity' query parameter"
 // @Failure      404  {string}  string "recipe not found"
 // @Failure      500  {string}  string "internal server error"
-// @Router       /recipes/{recipeID} [get]
+// @Router       /recipe/{recipeID} [get]
 func (rh *RecipeHandler) GetRecipe(w http.ResponseWriter, r *http.Request) {
 	// e.g. /recipes/123?ingredient=Flour&quantity=300
 	path := r.URL.Path
 	// This is not robust - you'd use a proper router in practice
-	recipeID := path[len("/recipes/"):]
+	recipeID := path[len("/recipe/"):]
 
 	// Query params
 	ingredient := r.URL.Query().Get("ingredient")
@@ -72,18 +75,49 @@ func (rh *RecipeHandler) GetRecipe(w http.ResponseWriter, r *http.Request) {
 // @Summary      List all recipes
 // @Description  Returns all recipes in the system
 // @Tags         recipes
+// @Param        ingredient  query     string  false "Ingredient to scale (e.g. 'Flour')"
 // @Produce      json
 // @Success      200  {array}  domain.Recipe
 // @Failure      500  {string}  string "failed to write response"
 // @Router       /recipes [get]
 func (rh *RecipeHandler) ListRecipes(w http.ResponseWriter, r *http.Request) {
-	slog.Debug("Listing all recipes")
-	recipes, err := rh.getAllRecipesUC.Execute()
+	ingredient := r.URL.Query().Get("ingredient")
+
+	if ingredient != "" {
+		slog.Debug(fmt.Sprintf("Listing all recipes with ingredient containing %s", ingredient))
+	} else {
+		slog.Debug("Listing all recipes")
+	}
+
+	recipes, err := rh.getAllRecipesUC.Execute(ingredient)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(recipes); err != nil {
+		log.Printf("failed to encode response: %v", err)
+		http.Error(w, "failed to write response", http.StatusInternalServerError)
+	}
+}
+
+// ListIngredients godoc
+// @Summary      List all ingredients
+// @Description  Returns all ingredients from all the recipes
+// @Tags         recipes
+// @Produce      json
+// @Success      200  {array}  domain.Recipe
+// @Failure      500  {string}  string "failed to write response"
+// @Router       /ingredients [get]
+func (rh *RecipeHandler) ListIngredients(w http.ResponseWriter, r *http.Request) {
+	slog.Debug("Listing all ingredients")
+
+	recipes, err := rh.getAllIngredientsUC.Execute()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(recipes); err != nil {
 		log.Printf("failed to encode response: %v", err)

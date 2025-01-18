@@ -3,7 +3,7 @@
     "name": "Chocolate Cake",
     "ingredients": [
       {
-        "name": "All-purpose flour",
+        "name": "Flour",
         "quantity": 200,
         "unit": "g"
       },

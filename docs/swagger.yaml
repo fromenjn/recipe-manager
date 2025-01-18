@@ -1,4 +1,134 @@
+definitions:
+  domain.Ingredient:
+    properties:
+      name:
+        type: string
+      quantity:
+        type: number
+      unit:
+        type: string
+    type: object
+  domain.Recipe:
+    properties:
+      id:
+        type: string
+      ingredients:
+        items:
+          $ref: '#/definitions/domain.Ingredient'
+        type: array
+      name:
+        type: string
+      steps:
+        items:
+          $ref: '#/definitions/domain.RecipeStep'
+        type: array
+    type: object
+  domain.RecipeIllustration:
+    properties:
+      description:
+        type: string
+      filepath:
+        type: string
+      id:
+        type: string
+    type: object
+  domain.RecipeStep:
+    properties:
+      id:
+        type: string
+      illustration:
+        items:
+          $ref: '#/definitions/domain.RecipeIllustration'
+        type: array
+      instructions:
+        type: string
+      name:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /ingredients:
+    get:
+      description: Returns all ingredients from all the recipes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Recipe'
+            type: array
+        "500":
+          description: failed to write response
+          schema:
+            type: string
+      summary: List all ingredients
+      tags:
+      - recipes
+  /recipe/{recipeID}:
+    get:
+      description: Get a recipe by its ID. Optionally, scale ingredient quantities
+        by specifying `ingredient` and `quantity`.
+      parameters:
+      - description: Recipe ID (e.g. '123')
+        in: path
+        name: recipeID
+        required: true
+        type: string
+      - description: Ingredient to scale (e.g. 'Flour')
+        in: query
+        name: ingredient
+        type: string
+      - description: Quantity to scale the ingredient to (e.g. '300')
+        in: query
+        name: quantity
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Recipe'
+        "400":
+          description: invalid 'quantity' query parameter
+          schema:
+            type: string
+        "404":
+          description: recipe not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Retrieve a single recipe
+      tags:
+      - recipes
+  /recipes:
+    get:
+      description: Returns all recipes in the system
+      parameters:
+      - description: Ingredient to scale (e.g. 'Flour')
+        in: query
+        name: ingredient
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Recipe'
+            type: array
+        "500":
+          description: failed to write response
+          schema:
+            type: string
+      summary: List all recipes
+      tags:
+      - recipes
 swagger: "2.0"

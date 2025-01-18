@@ -9,7 +9,7 @@ golangci-lint run ./...
 echo "==> Generating Swagger docs..."
 swag init \
   -d cmd/recipe-manager \
-  -o docs
+  -o docs -pdl 3
 
 # 3. Build
 echo "==> Building project..."

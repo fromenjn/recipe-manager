@@ -20,7 +20,7 @@ func main() {
 		Level: slog.LevelDebug,
 	}))
 	slog.SetDefault(logger)
-	configPath := flag.String("config", "config.json", "Path to configuration JSON file")
+	configPath := flag.String("config", "config/config.json", "Path to configuration JSON file")
 	flag.Parse()
 	// Load config
 	cfg, err := config.LoadConfig(*configPath)
@@ -39,9 +39,10 @@ func main() {
 	// Initialize use cases
 	getRecipeUC := usecase.NewGetRecipeUseCase(repo, recipeService)
 	getAllRecipesUC := usecase.NewGetAllRecipesUseCase(repo)
+	getAllIngredientsUC := usecase.NewGetAllIngredientsUseCase(repo)
 
 	// Initialize handlers
-	recipeHandler := handlers.NewRecipeHandler(getRecipeUC, getAllRecipesUC)
+	recipeHandler := handlers.NewRecipeHandler(getRecipeUC, getAllRecipesUC, getAllIngredientsUC)
 
 	// Create router
 	router := handlers.NewRouter(recipeHandler)
