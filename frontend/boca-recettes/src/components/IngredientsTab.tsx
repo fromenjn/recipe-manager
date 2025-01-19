@@ -1,47 +1,84 @@
-// src/components/IngredientsTab.tsx
 import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  List,
+  ListItem,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Box,
+  CircularProgress,
+  Alert,
+  Card,
+  CardContent,
+} from "@mui/material";
 import { fetchAllIngredients, fetchAllRecipes, fetchRecipeById } from "../services/api";
 import { Recipe } from "../types/domain";
 
 const IngredientsTab: React.FC = () => {
+  const [allIngredients, setAllIngredients] = useState<string[]>([]);
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [ingredientList, setIngredientList] = useState<string[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // User selections
   const [selectedRecipeId, setSelectedRecipeId] = useState("");
   const [selectedIngredient, setSelectedIngredient] = useState("");
   const [quantity, setQuantity] = useState<number>(0);
-
-  // Scaled recipe result
   const [scaledRecipe, setScaledRecipe] = useState<Recipe | null>(null);
 
-  // On mount: load all ingredients and all recipes
+  // Fetch all data on mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        // Parallel fetch
         const [ingredientsData, recipesData] = await Promise.all([
-          fetchAllIngredients(), // string[]
-          fetchAllRecipes(),     // Recipe[]
+          fetchAllIngredients(),
+          fetchAllRecipes(),
         ]);
+        setAllIngredients(ingredientsData);
+        setAllRecipes(recipesData);
         setIngredientList(ingredientsData);
         setRecipes(recipesData);
       } catch (err: any) {
-        setError(err.message || "Error fetching data");
+        setError(err.message || "Echec du chargement des données.");
       } finally {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
 
-  // Handle scaling a recipe
+  // Refresh ingredients when a recipe is selected
+  useEffect(() => {
+    if (selectedRecipeId) {
+      const selectedRecipe = allRecipes.find((recipe) => recipe.id === selectedRecipeId);
+      if (selectedRecipe) {
+        setIngredientList(selectedRecipe.ingredients.map((ing) => ing.name));
+      }
+    } else {
+      setIngredientList(allIngredients);
+    }
+  }, [selectedRecipeId, allRecipes, allIngredients]);
+
+  // Refresh recipes when an ingredient is selected
+  useEffect(() => {
+    if (selectedIngredient) {
+      const filteredRecipes = allRecipes.filter((recipe) =>
+        recipe.ingredients.some((ing) => ing.name === selectedIngredient)
+      );
+      setRecipes(filteredRecipes);
+    } else {
+      setRecipes(allRecipes);
+    }
+  }, [selectedIngredient, allRecipes]);
+
+  // Scale a recipe based on the selected ingredient and quantity
   const handleScaleRecipe = async () => {
     if (!selectedRecipeId || !selectedIngredient || quantity <= 0) {
+      setError("Tous les champs ne sont pas remplis correctement !");
       return;
     }
     try {
@@ -50,96 +87,119 @@ const IngredientsTab: React.FC = () => {
       const scaled = await fetchRecipeById(selectedRecipeId, selectedIngredient, quantity);
       setScaledRecipe(scaled);
     } catch (err: any) {
-      setError(err.message || "Error scaling recipe");
+      setError(err.message || "Failed to scale the recipe.");
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Ingredients</h2>
-      <p>Here is the list of all available ingredients:</p>
-      <ul>
-        {ingredientList.map((ing) => (
-          <li key={ing}>{ing}</li>
-        ))}
-      </ul>
-
-      <hr />
-
-      <h3>Scale a Recipe by an Ingredient</h3>
-      <div style={{ marginBottom: "1rem" }}>
-        <label style={{ marginRight: "0.5rem" }}>Recipe:</label>
-        <select
+    <Box padding="1rem">
+      {/*<Typography variant="h5" gutterBottom>
+      </Typography>*/}
+      <Box marginBottom={2}>
+        <Select
           value={selectedRecipeId}
           onChange={(e) => setSelectedRecipeId(e.target.value)}
+          displayEmpty
+          fullWidth
+          sx={{
+            marginBottom: 2, 
+            backgroundColor: "white", // White background for the dropdown
+            color: "black",           // Black text color
+            "& .MuiSelect-icon": { color: "black" }, // Black dropdown icon
+          }}
         >
-          <option value="">-- Select a Recipe --</option>
-          {recipes.map((r) => (
-            <option key={r.id} value={r.id}>
-              {r.name}
-            </option>
+          <MenuItem value="">-- Choisir une recette --</MenuItem>
+          {recipes.map((recipe) => (
+            <MenuItem key={recipe.id} value={recipe.id}>
+              {recipe.name}
+            </MenuItem>
           ))}
-        </select>
-      </div>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label style={{ marginRight: "0.5rem" }}>Ingredient to Scale:</label>
-        <select
+        </Select>
+        <Select
           value={selectedIngredient}
           onChange={(e) => setSelectedIngredient(e.target.value)}
+          displayEmpty
+          fullWidth
+          sx={{
+            marginBottom: 2, 
+            backgroundColor: "white", // White background for the dropdown
+            color: "black",           // Black text color
+            "& .MuiSelect-icon": { color: "black" }, // Black dropdown icon
+          }}
         >
-          <option value="">-- Select an Ingredient --</option>
+          <MenuItem value="">-- Choisir un ingrédient --</MenuItem>
           {ingredientList.map((ing) => (
-            <option key={ing} value={ing}>
+            <MenuItem key={ing} value={ing}>
               {ing}
-            </option>
+            </MenuItem>
           ))}
-        </select>
-      </div>
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label style={{ marginRight: "0.5rem" }}>Desired Quantity:</label>
-        <input
-          type="number"
-          value={quantity}
-          onChange={(e) => setQuantity(Number(e.target.value))}
+        </Select>
+        <TextField
+            type="number"
+            label="Quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            fullWidth
+            sx={{
+                backgroundColor: "white", // Ensures the input box has a white background
+                borderRadius: "4px",      // Rounded corners for consistency
+                "& .MuiInputLabel-root": {
+                backgroundColor: "white", // Prevent label from overlapping with the background
+                padding: "0 4px",         // Add padding around the label
+                },
+                "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                    borderColor: "#ccc",    // Light border for consistency
+                },
+                "&:hover fieldset": {
+                    borderColor: "#1976d2", // Highlight on hover
+                },
+                },
+            }}
         />
-      </div>
-
-      <button onClick={handleScaleRecipe}>Scale Recipe</button>
-
-      {scaledRecipe && (
-        <div style={{ marginTop: "1.5rem" }}>
-          <h4>Scaled Recipe: {scaledRecipe.name}</h4>
-          <ul>
-            {scaledRecipe.ingredients.map((ing) => (
-              <li key={ing.name}>
-                {ing.name}: {ing.quantity} {ing.unit}
-              </li>
-            ))}
-          </ul>
-          <ol>
-            {scaledRecipe.steps.map((step) => (
-              <li key={step.id} style={{ marginBottom: "1rem" }}>
-                <strong>{step.name}</strong>: {step.instructions}
-                {step.illustration.map((ill) => (
-                  <div key={ill.id} style={{ marginTop: "0.5rem" }}>
-                    <img
-                      src={ill.filepath}
-                      alt={ill.description}
-                      style={{ maxWidth: "200px" }}
-                    />
-                  </div>
-                ))}
-              </li>
-            ))}
-          </ol>
-        </div>
+        <Button variant="contained" color="primary" onClick={handleScaleRecipe} fullWidth>
+          Ajuster la recette
+        </Button>
+      </Box>
+      {error && (
+        <Alert severity="error" sx={{ marginBottom: 2 }}>
+          {error}
+        </Alert>
       )}
-    </div>
+      {scaledRecipe && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Scaled Recipe: {scaledRecipe.name}
+            </Typography>
+            <Typography variant="subtitle1">Ingredients:</Typography>
+            <List>
+              {scaledRecipe.ingredients.map((ing) => (
+                <ListItem key={ing.name}>
+                  {ing.name}: {ing.quantity} {ing.unit}
+                </ListItem>
+              ))}
+            </List>
+            <Typography variant="subtitle1">Steps:</Typography>
+            <ol>
+              {scaledRecipe.steps.map((step) => (
+                <li key={step.id}>
+                  {step.name}: {step.instructions}
+                </li>
+              ))}
+            </ol>
+          </CardContent>
+        </Card>
+      )}
+    </Box>
   );
 };
 

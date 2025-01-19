@@ -1,16 +1,26 @@
 // src/components/Navbar.tsx
-
 import React from "react";
-import { Link } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  onNavigate: (page: "ingredients" | "recipes") => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onNavigate }) => {
   return (
-    <nav style={{ padding: "1rem", borderBottom: "1px solid #ccc" }}>
-      <Link to="/ingredients" style={{ marginRight: "1rem" }}>
-        Ingredients
-      </Link>
-      <Link to="/recipes">Recipes</Link>
-    </nav>
+    <AppBar position="static" style={{ height: "10vh"}}>
+      <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography variant="h6">Boca'recettes</Typography>
+        <div>
+          <Button onClick={() => onNavigate("ingredients")} color="inherit">
+            Ingredients
+          </Button>
+          <Button onClick={() => onNavigate("recipes")} color="inherit">
+            Recettes
+          </Button>
+        </div>
+      </Toolbar>
+    </AppBar>
   );
 };
 

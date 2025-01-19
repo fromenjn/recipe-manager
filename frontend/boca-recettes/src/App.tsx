@@ -1,31 +1,20 @@
 // src/App.tsx
 import { useState } from "react";
+import Navbar from "./components/Navbar";
 import IngredientsTab from "./components/IngredientsTab";
 import RecipesTab from "./components/RecipesTab";
+import { Container } from "@mui/material";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<"ingredients" | "recipes">("ingredients");
+  const [activePage, setActivePage] = useState<"ingredients" | "recipes">("ingredients");
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <div style={{ marginBottom: "1rem" }}>
-        <button
-          onClick={() => setActiveTab("ingredients")}
-          style={activeTab === "ingredients" ? { fontWeight: "bold" } : {}}
-        >
-          Ingredients
-        </button>
-        <button
-          onClick={() => setActiveTab("recipes")}
-          style={{ marginLeft: "1rem", ...(activeTab === "recipes" ? { fontWeight: "bold" } : {}) }
-          }
-        >
-          Recipes
-        </button>
-      </div>
-
-      {activeTab === "ingredients" && <IngredientsTab />}
-      {activeTab === "recipes" && <RecipesTab />}
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column", width: "100vw" }}>
+      <Navbar onNavigate={setActivePage} />
+      <Container style={{ flex: 1, overflow: "auto", padding: "1rem" }}>
+        {activePage === "ingredients" && <IngredientsTab />}
+        {activePage === "recipes" && <RecipesTab />}
+      </Container>
     </div>
   );
 }
